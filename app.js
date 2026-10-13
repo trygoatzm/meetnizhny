@@ -991,7 +991,7 @@ document.addEventListener('DOMContentLoaded', () => {
    // Автоматическая установка локального логотипа (favicon) на всех страницах
   const favLink = document.createElement('link');
   favLink.rel = 'icon';
-  favLink.type = 'image/jpg'; 
-  favLink.href = 'logo.jpg';  
+  favLink.type = 'image/png'; 
+  favLink.href = 'logo.png';  
   document.head.appendChild(favLink);
 });
