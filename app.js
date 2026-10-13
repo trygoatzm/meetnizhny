@@ -988,4 +988,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     renderMasterRoute('route-48h');
   }
+   // Автоматическая установка локального логотипа (favicon) на всех страницах
+  const favLink = document.createElement('link');
+  favLink.rel = 'icon';
+  favLink.type = 'image/jpg'; 
+  favLink.href = 'logo.jpg';  
+  document.head.appendChild(favLink);
 });
