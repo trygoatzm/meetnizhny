@@ -988,6 +988,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     renderMasterRoute('route-48h');
   }
+   @media (max-width: 720px) {
+  .site-header {
+    position: relative; /* Шапка остаётся наверху страницы и не едет за скроллом */
+  }
    // Автоматическая установка локального логотипа (favicon) на всех страницах
   const favLink = document.createElement('link');
   favLink.rel = 'icon';
