@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>meetNIZHNY — Кураторский путеводитель по Нижнему Новгороду и области</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Верхняя сервисная строка (Wien.info style) -->
+  <div class="utility-bar">
+    <div class="container utility-inner">
+      <span>56°19′37″ N, 44°00′27″ E • Слияние Оки и Волги</span>
+      <span>Редакционный гид • Навигация 2026</span>
+    </div>
+  </div>
+
+  <!-- Главная навигация (Belmond Minimalist Header) -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand-logo"><span class="meet">meet</span>NIZHNY</a>
+      <nav class="main-nav">
+        <a href="index.html" class="nav-link active">Обложка</a>
+        <a href="city.html" class="nav-link">Нижний Новгород</a>
+        <a href="region.html" class="nav-link">Экспедиции в область</a>
+        <a href="routes.html" class="nav-link">Сценарии и логистика</a>
+      </nav>
+      <button class="fav-trigger" id="favDrawerBtn">
+        <span>Мой маршрут</span>
+        <span class="fav-count">[0]</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Hero Section (Belmond Split-Bottom Editorial Hero) -->
+  <section class="hero">
+    <img class="hero-bg" data-wiki="Нижегородский кремль" src="https://commons.wikimedia.org/wiki/Special:FilePath/Nizhny_Novgorod_Kremlin.jpg?width=1600" alt="Нижегородский кремль">
+    <div class="hero-gradient"></div>
+    <div class="container">
+      <span class="eyebrow" style="color:var(--accent-bronze-light);">Официальное кураторское издание</span>
+      <div class="hero-grid">
+        <div>
+          <h1 class="display-title">Высокий берег <em>двух рек</em>, железное кружево и тишина Заволжья</h1>
+        </div>
+        <div class="hero-aside">
+          <p>
+            Путеводитель по двум измерениям региона: от симфонических концертов в ажурных Пакгаузах на Стрелке до гиперболоидов Владимира Шухова на Оке и заповедного озера Светлояр.
+          </p>
+          <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+            <a href="city.html" class="btn btn-terracotta">Гид по городу</a>
+            <a href="region.html" class="btn btn-outline-light">Экспедиции в область</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Асимметричный журнальный разворот (Belmond Editorial Spread) -->
+  <section class="section">
+    <div class="container">
+      <div class="belmond-spread">
+        <div class="spread-col-left">
+          <span class="eyebrow">Архитектурный диалог</span>
+          <h2 class="section-title">Амфитеатр над водой и <em>купеческий размах</em></h2>
+          <div class="frame-portrait">
+            <img data-wiki="Церковь Собора Пресвятой Богородицы (Нижний Новгород)" src="https://commons.wikimedia.org/wiki/Special:FilePath/Stroganov_Church_in_Nizhny_Novgorod.jpg?width=1200" alt="Строгановская церковь на Рождественской">
+          </div>
+          <div class="image-caption">
+            <span>Улица Рождественская и Строгановская церковь (1697–1719)</span>
+            <span class="mono-tag">Нижний посад</span>
+          </div>
+        </div>
+
+        <div class="spread-col-right">
+          <p class="section-lead" style="margin-bottom:1.5rem;">
+            Нижний Новгород не похож на плоские города равнин. Его верхняя часть парит на стометровых Дятловых горах, а нижний посад тянется вдоль пристаней, где в XIX веке Нижегородская ярмарка диктовала цены на чай и железо от Лондона до Пекина.
+          </p>
+          <p class="section-lead">
+            Но стоит выехать за пределы города — и купеческое барокко сменяется радикальным инженерным авангардом башен Шухова, индустриальными муралами Выксы и таёжными тропами Керженца.
+          </p>
+          <div class="frame-landscape">
+            <img data-wiki="Стрелка (Нижний Новгород)" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='750'%3E%3Crect width='1200' height='750' fill='%2316181D'/%3E%3C/svg%3E" alt="Стрелка Оки и Волги">
+          </div>
+          <div class="image-caption">
+            <span>Мыс Стрелки и ажурные Пакгаузы на слиянии Оки и Волги</span>
+            <span class="mono-tag">56.3346° N, 43.9728° E</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Black Tomato: The Pursuit of Feeling (Двигатель эмоций) -->
+  <section class="section section-dark">
+    <div class="container">
+      <div class="section-header-split">
+        <div>
+          <span class="eyebrow">Вдохновлено Black Tomato • The Pursuit of Feeling</span>
+          <h2 class="section-title">Выбирайте не точку на карте, а <em>состояние</em></h2>
+        </div>
+        <p class="section-lead">
+          Переключайте четыре эмоциональных сценария ниже, чтобы увидеть, как городские локации соединяются с поездками в область.
+        </p>
+      </div>
+
+      <div class="feelings-matrix">
+        <div class="feelings-nav" id="feelingsNav"></div>
+        <div class="feeling-stage" id="feelingStage"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Remote Lands: 1 - 2 - 3 Конфигуратор эксклюзивных впечатлений -->
+  <section class="section section-alabaster">
+    <div class="container">
+      <div class="section-header-split">
+        <div>
+          <span class="eyebrow">Кураторский подбор • Bespoke Experiences</span>
+          <h2 class="section-title">Шесть закрытых и <em>авторских впечатлений</em></h2>
+        </div>
+        <p class="section-lead">
+          В отличие от базового справочника достопримечательностей, здесь собраны готовые сценарии действия — от выхода под парусом на Стрелке до полёта на «Валдае» в Макарьев.
+        </p>
+      </div>
+
+      <div class="remotelands-finder">
+        <div class="rl-step">
+          <div class="rl-step-header">
+            <span class="rl-num">01</span>
+            <span class="rl-label">География</span>
+          </div>
+          <select class="rl-select" id="rlScope">
+            <option value="all">Весь регион (Город + Область)</option>
+            <option value="city">Только акватория и кварталы Нижнего</option>
+            <option value="region">Экспедиции по Нижегородской области</option>
+          </select>
+        </div>
+
+        <div class="rl-step">
+          <div class="rl-step-header">
+            <span class="rl-num">02</span>
+            <span class="rl-label">Эмоциональный вектор</span>
+          </div>
+          <select class="rl-select" id="rlMood">
+            <option value="all">Все эмоции</option>
+            <option value="sunset">Предзакатная эйфория и вода</option>
+            <option value="avantgarde">Индустриальный шик и музыка</option>
+            <option value="merchant">Купеческий размах и ремёсла</option>
+            <option value="mystic">Тишина усадеб и Заволжье</option>
+          </select>
+        </div>
+
+        <div class="rl-step">
+          <div class="rl-step-header">
+            <span class="rl-num">03</span>
+            <span class="rl-label">Сезонность</span>
+          </div>
+          <select class="rl-select" id="rlSeason">
+            <option value="all">Любой сезон</option>
+            <option value="summer">Речная навигация (Май — Сентябрь)</option>
+            <option value="autumn">Золотая Болдинская осень</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="editorial-grid" id="signatureExperiencesGrid"></div>
+    </div>
+  </section>
+
+  <!-- Discover LA: Today's Must Read (Журнальная рубрика) -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header-split">
+        <div>
+          <span class="eyebrow">Редакционный фокус • Журнал meetNIZHNY</span>
+          <h2 class="section-title">Главные темы <em>сезона 2026</em></h2>
+        </div>
+        <div>
+          <a href="routes.html" class="editorial-link">Все готовые маршруты →</a>
+        </div>
+      </div>
+
+      <div class="must-read-grid">
+        <div class="must-read-lead">
+          <img data-wiki="Шуховская башня на Оке" src="https://commons.wikimedia.org/wiki/Special:FilePath/Shukhov_tower_on_the_Oka_river_2006.jpg?width=1200" alt="Шуховская башня на Оке">
+          <span class="eyebrow">Главный материал номера</span>
+          <h3 class="serif" style="font-size:2.4rem; margin-bottom:0.75rem;">Феномен нижегородского авангарда: как Шухов и выксунские заводы изменили архитектуру</h3>
+          <p class="section-lead" style="margin-bottom:1.25rem;">
+            От павильонов Всероссийской выставки 1896 года до 128-метровой сетчатой опоры на берегу Оки и современного «Выкса-фестиваля» — большой маршрут по индустриальному наследию региона.
+          </p>
+          <a href="region.html" class="editorial-link">Перейти к индустриальным экспедициям →</a>
+        </div>
+
+        <div class="must-read-side">
+          <div class="side-story">
+            <div class="mono-tag" style="color:var(--accent-terracotta); margin-bottom:0.4rem;">МЕДИААРТ • АПРЕЛЬ — МАЙ</div>
+            <h4 class="serif" style="font-size:1.65rem; margin-bottom:0.45rem;">Фестиваль INTERVALS: когда фасады Кремля и Ярмарки становятся цифровыми полотнами</h4>
+            <p style="font-size:0.88rem; color:var(--text-charcoal);">Крупнейший в России фестиваль аудиовизуального искусства на исторических объектах города.</p>
+          </div>
+          <div class="side-story">
+            <div class="mono-tag" style="color:var(--accent-bronze); margin-bottom:0.4rem;">НАВИГАЦИЯ • МАЙ — СЕНТЯБРЬ</div>
+            <h4 class="serif" style="font-size:1.65rem; margin-bottom:0.45rem;">Флот на подводных крыльях: гид по речным рейсам «Валдай 45Р» и «Метеор 120Р»</h4>
+            <p style="font-size:0.88rem; color:var(--text-charcoal);">Как за один час по Волге добраться из центра Нижнего в Городец, Макарьев или Юрино.</p>
+          </div>
+          <div class="side-story">
+            <div class="mono-tag" style="color:var(--accent-bronze); margin-bottom:0.4rem;">ГАСТРОНОМИЯ • КРУГЛЫЙ ГОД</div>
+            <h4 class="serif" style="font-size:1.65rem; margin-bottom:0.45rem;">Новая волжская кухня: от щучьей икры и сома до секретных рюмочных Рождественской</h4>
+            <p style="font-size:0.88rem; color:var(--text-charcoal);">Кулинарная карта главных исторических улиц верхнего и нижнего посада.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Модальное окно и боковая панель маршрута -->
+  <div class="modal-backdrop" id="placeModal">
+    <div class="modal-window" id="placeModalBody"></div>
+  </div>
+
+  <div class="drawer-backdrop" id="favDrawer">
+    <div class="drawer-panel">
+      <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:1.25rem; border-bottom:1px solid var(--line-light-strong);">
+        <h3 class="serif" style="font-size:1.85rem;">Мой маршрут</h3>
+        <button id="favDrawerClose" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">✕</button>
+      </div>
+      <div id="drawerList" style="flex-grow:1; overflow-y:auto; padding:1rem 0;"></div>
+      <a href="routes.html" class="btn btn-terracotta" style="width:100%;">Открыть почасовые таймлайны →</a>
+    </div>
+  </div>
+
+  <!-- Подвал -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="index.html" class="brand-logo" style="color:var(--text-ivory); margin-bottom:1rem;"><span class="meet">meet</span>NIZHNY</a>
+          <p style="color:var(--text-ivory-muted); font-size:0.9rem; max-width:340px; font-weight:300;">
+            Архитектурный и экспедиционный путеводитель по Нижнему Новгороду и Нижегородской области.
+          </p>
+        </div>
+        <div>
+          <div class="mono-tag" style="color:var(--accent-bronze-light); margin-bottom:1rem;">Разделы издания</div>
+          <ul class="footer-links">
+            <li><a href="index.html">Журнальная обложка</a></li>
+            <li><a href="city.html">Гид по Нижнему Новгороду</a></li>
+            <li><a href="region.html">Экспедиции в область</a></li>
+            <li><a href="routes.html">Маршруты и логистика</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="mono-tag" style="color:var(--accent-bronze-light); margin-bottom:1rem;">Городской код</div>
+          <ul class="footer-links">
+            <li><a href="city.html">Нижегородский кремль</a></li>
+            <li><a href="city.html">Пакгаузы на Стрелке</a></li>
+            <li><a href="city.html">Здание Госбанка</a></li>
+            <li><a href="city.html">Улица Рождественская</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="mono-tag" style="color:var(--accent-bronze-light); margin-bottom:1rem;">Экспедиции</div>
+          <ul class="footer-links">
+            <li><a href="region.html">Выкса и Шуховская башня</a></li>
+            <li><a href="region.html">Городец и Семёнов</a></li>
+            <li><a href="region.html">Арзамас и Большое Болдино</a></li>
+            <li><a href="region.html">Озеро Светлояр</a></li>
+          </ul>
+        </div>
+      </div>
+      <div style="padding-top:2rem; font-size:0.78rem; color:var(--text-ivory-muted); display:flex; justify-content:space-between; flex-wrap:wrap;">
+        <span>© 2026 meetNIZHNY • Кураторский гид по Нижегородскому региону</span>
+        <span>Фотографии: архив Wikimedia Commons (Нижний Новгород и область)</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,1274 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@300;400;500;600&display=swap');
+
+:root {
+  /* Палитра Belmond (Тёплый лён, алебастр и бронза) */
+  --bg-linen: #F4EFE6;
+  --bg-alabaster: #FAF8F3;
+  --bg-stone: #EAE3D5;
+  
+  /* Палитра Black Tomato & Remote Lands (Обсидиан, графит, терракота) */
+  --bg-obsidian: #0E0F12;
+  --bg-obsidian-elevated: #16181D;
+  --bg-obsidian-card: #1B1D24;
+  
+  /* Типографика */
+  --text-ink: #161513;
+  --text-charcoal: #4A4742;
+  --text-muted: #7D786F;
+  --text-ivory: #F4EFE6;
+  --text-ivory-muted: rgba(244, 239, 230, 0.68);
+  
+  /* Акценты */
+  --accent-terracotta: #C84B28;
+  --accent-terracotta-hover: #A63819;
+  --accent-bronze: #9E7B4F;
+  --accent-bronze-light: #C5A375;
+
+  /* Тонкие архитектурные линии (Hairline borders) */
+  --line-light: rgba(22, 21, 19, 0.12);
+  --line-light-strong: rgba(22, 21, 19, 0.28);
+  --line-dark: rgba(244, 239, 230, 0.14);
+  --line-dark-strong: rgba(244, 239, 230, 0.32);
+
+  /* Шрифты с полной поддержкой кириллицы */
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Ритм и отступы */
+  --section-pad: clamp(5rem, 9vw, 8.5rem);
+  --container-max: 1400px;
+  --ease-luxury: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  background-color: var(--bg-linen);
+  color: var(--text-ink);
+  font-family: var(--font-sans);
+  font-weight: 400;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   ТИПОГРАФИКА (Belmond & Black Tomato Editorial Style)
+   ========================================================================== */
+h1, h2, h3, h4, .serif {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  line-height: 1.06;
+  letter-spacing: -0.015em;
+}
+
+h1 em, h2 em, h3 em, .serif em {
+  font-style: italic;
+  font-weight: 300;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: var(--accent-bronze);
+  margin-bottom: 1.25rem;
+}
+
+.eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 24px;
+  height: 1px;
+  background-color: currentColor;
+}
+
+.section-dark .eyebrow {
+  color: var(--accent-bronze-light);
+}
+
+.display-title {
+  font-size: clamp(3.1rem, 6vw, 5.6rem);
+  font-weight: 300;
+  line-height: 1.02;
+}
+
+.section-title {
+  font-size: clamp(2.4rem, 4.2vw, 3.85rem);
+  font-weight: 400;
+  margin-bottom: 1.25rem;
+}
+
+.section-lead {
+  font-size: clamp(1rem, 1.2vw, 1.15rem);
+  color: var(--text-charcoal);
+  max-width: 620px;
+  font-weight: 300;
+  line-height: 1.75;
+}
+
+.section-dark .section-lead {
+  color: var(--text-ivory-muted);
+}
+
+.mono-tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   КОНТЕЙНЕРЫ И СЕКЦИИ
+   ========================================================================== */
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 clamp(1.5rem, 4vw, 4rem);
+}
+
+.section {
+  padding: var(--section-pad) 0;
+  border-bottom: 1px solid var(--line-light);
+}
+
+.section-alabaster {
+  background-color: var(--bg-alabaster);
+}
+
+.section-stone {
+  background-color: var(--bg-stone);
+}
+
+.section-dark {
+  background-color: var(--bg-obsidian);
+  color: var(--text-ivory);
+  border-bottom: 1px solid var(--line-dark);
+}
+
+.section-header-split {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 3rem;
+  align-items: end;
+  margin-bottom: 4rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid var(--line-light);
+}
+
+.section-dark .section-header-split {
+  border-bottom-color: var(--line-dark);
+}
+
+/* ==========================================================================
+   ШАПКА САЙТА (Wien.info Utility Bar + Belmond Minimalist Nav)
+   ========================================================================== */
+.utility-bar {
+  background-color: var(--bg-obsidian);
+  color: var(--text-ivory-muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--line-dark);
+  padding: 0.6rem 0;
+}
+
+.utility-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: rgba(244, 239, 230, 0.94);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line-light);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 86px;
+}
+
+.brand-logo {
+  text-decoration: none;
+  color: var(--text-ink);
+  font-family: var(--font-sans);
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  display: flex;
+  align-items: baseline;
+}
+
+.brand-logo .meet {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.85rem;
+  letter-spacing: 0;
+  color: var(--accent-terracotta);
+  margin-right: 0.25rem;
+  text-transform: lowercase;
+}
+
+.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 2.75rem;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: var(--text-ink);
+  font-size: 0.76rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  padding: 0.4rem 0;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 1px;
+  background-color: var(--accent-terracotta);
+  transition: width 0.4s var(--ease-luxury);
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+.nav-link.active {
+  color: var(--accent-terracotta);
+}
+
+.fav-trigger {
+  background: transparent;
+  border: 1px solid var(--line-light-strong);
+  padding: 0.65rem 1.25rem;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--text-ink);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  transition: all 0.35s var(--ease-luxury);
+}
+
+.fav-trigger:hover {
+  background-color: var(--text-ink);
+  color: var(--bg-linen);
+}
+
+.fav-count {
+  font-family: var(--font-mono);
+  color: var(--accent-terracotta);
+  font-weight: 600;
+}
+
+.fav-trigger:hover .fav-count {
+  color: var(--accent-bronze-light);
+}
+
+/* ==========================================================================
+   КНОПКИ И ССЫЛКИ (Острые архитектурные грани Belmond)
+   ========================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  font-family: var(--font-sans);
+  font-size: 0.74rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 0;
+  transition: all 0.4s var(--ease-luxury);
+}
+
+.btn-terracotta {
+  background-color: var(--accent-terracotta);
+  color: #fff;
+}
+
+.btn-terracotta:hover {
+  background-color: var(--accent-terracotta-hover);
+}
+
+.btn-outline-light {
+  background: transparent;
+  color: var(--text-ivory);
+  border-color: var(--line-dark-strong);
+}
+
+.btn-outline-light:hover {
+  background-color: var(--text-ivory);
+  color: var(--bg-obsidian);
+}
+
+.btn-outline-dark {
+  background: transparent;
+  color: var(--text-ink);
+  border-color: var(--line-light-strong);
+}
+
+.btn-outline-dark:hover {
+  background-color: var(--text-ink);
+  color: var(--bg-linen);
+}
+
+.editorial-link {
+  background: none;
+  border: none;
+  padding: 0 0 0.25rem 0;
+  font-family: var(--font-sans);
+  font-size: 0.73rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--text-ink);
+  border-bottom: 1px solid var(--text-ink);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.editorial-link:hover {
+  color: var(--accent-terracotta);
+  border-bottom-color: var(--accent-terracotta);
+}
+
+.section-dark .editorial-link {
+  color: var(--text-ivory);
+  border-bottom-color: var(--line-dark-strong);
+}
+
+.section-dark .editorial-link:hover {
+  color: var(--accent-bronze-light);
+  border-bottom-color: var(--accent-bronze-light);
+}
+
+/* ==========================================================================
+   HERO СЕКЦИЯ (Belmond Full-Bleed + Split Caption)
+   ========================================================================== */
+.hero {
+  position: relative;
+  min-height: 86vh;
+  display: flex;
+  align-items: flex-end;
+  padding: 5.5rem 0 4.5rem;
+  background-color: var(--bg-obsidian);
+  color: var(--text-ivory);
+  overflow: hidden;
+}
+
+.hero-subpage {
+  min-height: 62vh;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.58;
+  transform: scale(1.04);
+  transition: transform 10s var(--ease-luxury);
+}
+
+.hero:hover .hero-bg {
+  transform: scale(1);
+}
+
+.hero-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(14, 15, 18, 0.35) 0%,
+    rgba(14, 15, 18, 0.45) 45%,
+    rgba(14, 15, 18, 0.94) 100%
+  );
+}
+
+.hero-grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1.35fr 0.65fr;
+  gap: 4rem;
+  align-items: end;
+  padding-top: 3rem;
+  border-top: 1px solid var(--line-dark);
+}
+
+.hero-aside {
+  border-left: 1px solid var(--line-dark);
+  padding-left: 2.25rem;
+}
+
+.hero-aside p {
+  font-size: 0.98rem;
+  color: var(--text-ivory-muted);
+  font-weight: 300;
+  margin-bottom: 1.75rem;
+}
+
+/* ==========================================================================
+   АСИММЕТРИЧНЫЙ ЖУРНАЛЬНЫЙ РАЗВОРОТ (Belmond Editorial Spread)
+   ========================================================================== */
+.belmond-spread {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 5rem;
+  align-items: start;
+}
+
+.spread-col-left .frame-portrait {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background-color: var(--bg-obsidian);
+  margin-bottom: 1.25rem;
+}
+
+.spread-col-left .frame-portrait img,
+.spread-col-right .frame-landscape img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.2s var(--ease-luxury);
+}
+
+.spread-col-left:hover .frame-portrait img,
+.spread-col-right:hover .frame-landscape img {
+  transform: scale(1.05);
+}
+
+.spread-col-right {
+  padding-top: 5.5rem;
+}
+
+.spread-col-right .frame-landscape {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background-color: var(--bg-obsidian);
+  margin: 2.5rem 0 1.25rem;
+}
+
+.image-caption {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--line-light);
+  padding-top: 0.65rem;
+}
+
+/* ==========================================================================
+   BLACK TOMATO: THE PURSUIT OF FEELING (Матрица эмоций)
+   ========================================================================== */
+.feelings-matrix {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  border: 1px solid var(--line-dark);
+  background-color: var(--bg-obsidian-elevated);
+}
+
+.feelings-nav {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--line-dark);
+}
+
+.feeling-btn {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--line-dark);
+  padding: 1.85rem 2rem;
+  text-align: left;
+  color: var(--text-ivory);
+  cursor: pointer;
+  transition: background-color 0.35s ease;
+}
+
+.feeling-btn:last-child {
+  border-bottom: none;
+}
+
+.feeling-btn:hover,
+.feeling-btn.active {
+  background-color: rgba(200, 75, 40, 0.16);
+}
+
+.feeling-btn.active {
+  border-left: 3px solid var(--accent-terracotta);
+}
+
+.feeling-num {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--accent-bronze-light);
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.feeling-name {
+  font-family: var(--font-serif);
+  font-size: 1.55rem;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.feeling-sub {
+  font-size: 0.8rem;
+  color: var(--text-ivory-muted);
+}
+
+.feeling-stage {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+}
+
+.feeling-stage-img {
+  width: 100%;
+  height: 100%;
+  min-height: 460px;
+  object-fit: cover;
+}
+
+.feeling-stage-body {
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* ==========================================================================
+   REMOTE LANDS: 1 - 2 - 3 BESPOKE TRIP FINDER
+   ========================================================================== */
+.remotelands-finder {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--line-light-strong);
+  border-bottom: 1px solid var(--line-light-strong);
+  margin-bottom: 4rem;
+  background-color: var(--bg-alabaster);
+}
+
+.rl-step {
+  padding: 2rem 2.25rem;
+  border-right: 1px solid var(--line-light);
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.rl-step:last-child {
+  border-right: none;
+}
+
+.rl-step-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.85rem;
+}
+
+.rl-num {
+  font-family: var(--font-serif);
+  font-size: 2.2rem;
+  font-style: italic;
+  color: var(--accent-bronze);
+  line-height: 1;
+}
+
+.rl-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+}
+
+.rl-select {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid var(--line-light-strong);
+  background: transparent;
+  padding: 0.65rem 0;
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  color: var(--text-ink);
+  cursor: pointer;
+  outline: none;
+}
+
+/* ==========================================================================
+   КАРТОЧКИ ГАЛЕРЕЙНОГО ТИПА (Belmond 4:5 Portrait Architecture)
+   ========================================================================== */
+.filter-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 3.5rem;
+  border-bottom: 1px solid var(--line-light);
+  padding-bottom: 1.25rem;
+}
+
+.section-dark .filter-strip {
+  border-bottom-color: var(--line-dark);
+}
+
+.filter-tab {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 0.55rem 1.15rem;
+  font-family: var(--font-sans);
+  font-size: 0.73rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-tab:hover,
+.filter-tab.active {
+  color: var(--text-ink);
+  border-color: var(--text-ink);
+}
+
+.section-dark .filter-tab {
+  color: var(--text-ivory-muted);
+}
+
+.section-dark .filter-tab:hover,
+.section-dark .filter-tab.active {
+  color: var(--text-ivory);
+  border-color: var(--accent-bronze-light);
+}
+
+.editorial-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  column-gap: 2.5rem;
+  row-gap: 4rem;
+}
+
+.editorial-card {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.editorial-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background-color: var(--bg-obsidian-card);
+  margin-bottom: 1.4rem;
+}
+
+.editorial-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.2s var(--ease-luxury);
+}
+
+.editorial-card:hover .editorial-media img {
+  transform: scale(1.06);
+}
+
+.media-top-bar {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  z-index: 2;
+}
+
+.media-tag {
+  background-color: rgba(14, 15, 18, 0.82);
+  backdrop-filter: blur(6px);
+  color: var(--text-ivory);
+  font-size: 0.66rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  padding: 0.45rem 0.85rem;
+}
+
+.fav-icon-btn {
+  width: 38px;
+  height: 38px;
+  background-color: rgba(244, 239, 230, 0.92);
+  border: none;
+  color: var(--text-ink);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.fav-icon-btn.active {
+  background-color: var(--accent-terracotta);
+  color: #fff;
+}
+
+.editorial-meta {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: var(--accent-bronze);
+  border-bottom: 1px solid var(--line-light);
+  padding-bottom: 0.55rem;
+  margin-bottom: 0.85rem;
+}
+
+.section-dark .editorial-meta {
+  color: var(--accent-bronze-light);
+  border-bottom-color: var(--line-dark);
+}
+
+.editorial-title {
+  font-size: 1.85rem;
+  margin-bottom: 0.65rem;
+  font-weight: 400;
+}
+
+.editorial-desc {
+  font-size: 0.93rem;
+  color: var(--text-charcoal);
+  font-weight: 300;
+  margin-bottom: 1.35rem;
+  flex-grow: 1;
+}
+
+.section-dark .editorial-desc {
+  color: var(--text-ivory-muted);
+}
+
+/* Telemetry Table inside Region Cards (Remote Lands style) */
+.telemetry-box {
+  border-top: 1px solid var(--line-dark);
+  border-bottom: 1px solid var(--line-dark);
+  padding: 0.85rem 0;
+  margin-bottom: 1.25rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+  font-size: 0.76rem;
+}
+
+.telemetry-item span {
+  display: block;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-ivory-muted);
+}
+
+.telemetry-item strong {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  color: var(--text-ivory);
+}
+
+/* ==========================================================================
+   DISCOVER LA: TODAY'S MUST READ (Асимметричная журнальная сетка)
+   ========================================================================== */
+.must-read-grid {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  gap: 3.5rem;
+}
+
+.must-read-lead img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  margin-bottom: 1.5rem;
+}
+
+.must-read-side {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-left: 1px solid var(--line-light);
+  padding-left: 2.5rem;
+}
+
+.side-story {
+  padding-bottom: 1.75rem;
+  border-bottom: 1px solid var(--line-light);
+}
+
+.side-story:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+/* ==========================================================================
+   КВАРТАЛЫ И МАРШРУТЫ (City & Routes Pages)
+   ========================================================================== */
+.hood-explorer {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  border: 1px solid var(--line-light-strong);
+  background-color: var(--bg-alabaster);
+}
+
+.hood-sidebar {
+  border-right: 1px solid var(--line-light-strong);
+  display: flex;
+  flex-direction: column;
+}
+
+.hood-btn {
+  padding: 1.65rem 1.75rem;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--line-light);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.hood-btn.active {
+  background-color: var(--bg-obsidian);
+  color: var(--text-ivory);
+}
+
+.hood-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.hood-content img {
+  width: 100%;
+  height: 100%;
+  min-height: 440px;
+  object-fit: cover;
+}
+
+.hood-details {
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Timelines */
+.itinerary-step {
+  display: grid;
+  grid-template-columns: 220px 1fr 300px;
+  gap: 2.5rem;
+  padding: 2.5rem 0;
+  border-bottom: 1px solid var(--line-light);
+  align-items: center;
+}
+
+.itinerary-step img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+/* ==========================================================================
+   МОДАЛЬНОЕ ОКНО И ПАНЕЛЬ МАРШРУТА
+   ========================================================================== */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(14, 15, 18, 0.82);
+  backdrop-filter: blur(8px);
+  z-index: 300;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.modal-backdrop.open {
+  display: flex;
+}
+
+.modal-window {
+  background-color: var(--bg-alabaster);
+  color: var(--text-ink);
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid var(--line-light-strong);
+  position: relative;
+}
+
+.modal-hero {
+  position: relative;
+  height: 380px;
+  background: var(--bg-obsidian);
+}
+
+.modal-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  width: 44px;
+  height: 44px;
+  background: var(--bg-obsidian);
+  color: var(--text-ivory);
+  border: 1px solid var(--line-dark-strong);
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+.modal-body {
+  padding: 3rem;
+}
+
+.insider-callout {
+  background-color: var(--bg-linen);
+  border-left: 3px solid var(--accent-terracotta);
+  padding: 1.5rem 1.75rem;
+  margin: 2rem 0;
+}
+
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(14, 15, 18, 0.65);
+  z-index: 250;
+  display: none;
+  justify-content: flex-end;
+}
+
+.drawer-backdrop.open {
+  display: flex;
+}
+
+.drawer-panel {
+  width: 100%;
+  max-width: 460px;
+  background-color: var(--bg-alabaster);
+  height: 100%;
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--line-light-strong);
+}
+
+/* ==========================================================================
+   ПОДВАЛ (Belmond Minimalist Footer)
+   ========================================================================== */
+.site-footer {
+  background-color: var(--bg-obsidian);
+  color: var(--text-ivory);
+  padding: 5.5rem 0 3rem;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr;
+  gap: 3rem;
+  padding-bottom: 4rem;
+  border-bottom: 1px solid var(--line-dark);
+}
+
+.footer-links {
+  list-style: none;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.footer-links a {
+  color: var(--text-ivory-muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: color 0.25s;
+}
+
+.footer-links a:hover {
+  color: var(--accent-bronze-light);
+}
+
+@media (max-width: 1024px) {
+  .hero-grid,
+  .section-header-split,
+  .belmond-spread,
+  .feelings-matrix,
+  .feeling-stage,
+  .remotelands-finder,
+  .must-read-grid,
+  .hood-explorer,
+  .hood-content,
+  .itinerary-step,
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+  .spread-col-right {
+    padding-top: 0;
+  }
+  .must-read-side {
+    border-left: none;
+    padding-left: 0;
+  }
+}
+
+/* ==========================================================================
+   АДАПТИВНОСТЬ ПОД ПЛАНШЕТЫ И СМАРТФОНЫ (iOS / Android)
+   Замени этим блоком старые @media в самом конце styles.css
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .hero-grid,
+  .section-header-split,
+  .belmond-spread,
+  .feelings-matrix,
+  .feeling-stage,
+  .remotelands-finder,
+  .must-read-grid,
+  .hood-explorer,
+  .hood-content,
+  .itinerary-step,
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 2rem;
+  }
+
+  .spread-col-right {
+    padding-top: 0;
+  }
+
+  .hero-aside {
+    border-left: none;
+    border-top: 1px solid var(--line-dark);
+    padding-left: 0;
+    padding-top: 1.5rem;
+  }
+
+  .must-read-side {
+    border-left: none;
+    border-top: 1px solid var(--line-light);
+    padding-left: 0;
+    padding-top: 2rem;
+    gap: 1.75rem;
+  }
+
+  .feelings-nav {
+    border-right: none;
+    border-bottom: 1px solid var(--line-dark);
+  }
+
+  .hood-sidebar {
+    border-right: none;
+    border-bottom: 1px solid var(--line-light-strong);
+  }
+
+  .rl-step {
+    border-right: none;
+    border-bottom: 1px solid var(--line-light);
+  }
+
+  .rl-step:last-child {
+    border-bottom: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .utility-bar {
+    display: none;
+  }
+
+  .container {
+    padding: 0 1.25rem;
+  }
+
+  .section {
+    padding: 3.5rem 0;
+  }
+
+  /* Шапка с горизонтальным свайпом меню без переноса строк */
+  .header-inner {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 0.85rem 0;
+    gap: 0.65rem;
+  }
+
+  .brand-logo {
+    font-size: 1.15rem;
+  }
+
+  .brand-logo .meet {
+    font-size: 1.55rem;
+  }
+
+  .fav-trigger {
+    padding: 0.5rem 0.85rem;
+    font-size: 0.68rem;
+  }
+
+  .main-nav {
+    order: 3;
+    width: 100%;
+    gap: 1.35rem;
+    overflow-x: auto;
+    padding-bottom: 0.35rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .main-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-link {
+    white-space: nowrap;
+    font-size: 0.72rem;
+  }
+
+  /* Hero-секция на мобильном */
+  .hero {
+    min-height: 75vh;
+    padding: 3.5rem 0 2.5rem;
+  }
+
+  .hero-subpage {
+    min-height: 50vh;
+  }
+
+  .display-title {
+    font-size: 2.35rem;
+    line-height: 1.08;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  /* Главное исправление: убираем распирание экрана карточками 360px */
+  .editorial-grid {
+    grid-template-columns: 1fr;
+    row-gap: 3rem;
+  }
+
+  /* Горизонтальный скролл для длинных полос фильтров */
+  .filter-strip {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 0.85rem;
+    margin-bottom: 2.25rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .filter-strip::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-tab {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Компактные отступы внутри интерактивных блоков и модалок */
+  .feeling-stage-img,
+  .hood-content img {
+    min-height: 260px;
+    max-height: 320px;
+  }
+
+  .feeling-stage-body,
+  .hood-details,
+  .modal-body {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .feeling-btn,
+  .hood-btn,
+  .rl-step {
+    padding: 1.25rem;
+  }
+
+  .rl-select {
+    font-size: 1.15rem;
+  }
+
+  /* Модальное окно и шторка маршрута на весь экран телефона */
+  .modal-backdrop {
+    padding: 0.75rem;
+  }
+
+  .modal-hero {
+    height: 240px;
+  }
+
+  .drawer-panel {
+    max-width: 100%;
+    padding: 1.5rem 1.25rem;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 0.95rem 1.25rem;
+  }
+}

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Сценарии и Логистика | meetNIZHNY</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="utility-bar">
+    <div class="container utility-inner">
+      <span>Готовые таймлайны и транспортная база</span>
+      <span>М-12 «Восток» • «Ласточка» • Канатная дорога НН — Бор</span>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand-logo"><span class="meet">meet</span>NIZHNY</a>
+      <nav class="main-nav">
+        <a href="index.html" class="nav-link">Обложка</a>
+        <a href="city.html" class="nav-link">Нижний Новгород</a>
+        <a href="region.html" class="nav-link">Экспедиции в область</a>
+        <a href="routes.html" class="nav-link active">Сценарии и логистика</a>
+      </nav>
+      <button class="fav-trigger" id="favDrawerBtn">
+        <span>Мой маршрут</span>
+        <span class="fav-count">[0]</span>
+      </button>
+    </div>
+  </header>
+
+  <section class="hero hero-subpage">
+    <img class="hero-bg" data-wiki="Нижегородская канатная дорога" src="https://commons.wikimedia.org/wiki/Special:FilePath/Nizhny_Novgorod_Cable_Car.jpg?width=1600" alt="Нижегородская канатная дорога над Волгой">
+    <div class="hero-gradient"></div>
+    <div class="container">
+      <span class="eyebrow" style="color:var(--accent-bronze-light);">Часть III • Таймлайны и логистика</span>
+      <div class="hero-grid">
+        <div>
+          <h1 class="display-title">Сценарии поездок и <em>практическая база</em></h1>
+        </div>
+        <div class="hero-aside">
+          <p>
+            Пошаговые расписания с привязкой ко времени суток и полная инструкция по транспорту в городе и регионе.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Почасовые сценарии (Discover LA "3 Days of..." + Remote Lands Itineraries) -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header-split">
+        <div>
+          <span class="eyebrow">Почасовой планировщик</span>
+          <h2 class="section-title">Три эталонных <em>сценария путешествия</em></h2>
+        </div>
+        <p class="section-lead">
+          Переключайте вкладки ниже, чтобы открыть детальный таймлайн с иллюстрациями каждого этапа.
+        </p>
+      </div>
+
+      <div class="filter-strip">
+        <button class="filter-tab active" data-route-tab="route-48h">01 / Нижний за 48 часов (Классика + Авангард)</button>
+        <button class="filter-tab" data-route-tab="route-sunset">02 / Охота за закатом (Видовой маршрут)</button>
+        <button class="filter-tab" data-route-tab="route-oblast">03 / Кольцо области (Шухов — Выкса — Арзамас — Болдино)</button>
+      </div>
+
+      <div id="masterRouteStage"></div>
+    </div>
+  </section>
+
+  <!-- Справочная матрица транспорта и логистики (Wien.info Services) -->
+  <section class="section section-dark">
+    <div class="container">
+      <div class="section-header-split">
+        <div>
+          <span class="eyebrow">Инфраструктура и сезонность</span>
+          <h2 class="section-title">Практическая <em>база путешественника</em></h2>
+        </div>
+        <p class="section-lead">
+          Расписания, технические перерывы и особенности передвижения между верхней и нижней частями города.
+        </p>
+      </div>
+
+      <div class="editorial-grid">
+        <div style="border-top:1px solid var(--line-dark-strong); padding-top:1.75rem;">
+          <div class="mono-tag" style="color:var(--accent-bronze-light); margin-bottom:0.5rem;">СКОРОСТНЫЕ КОРИДОРЫ</div>
+          <h3 class="serif" style="font-size:1.95rem; margin-bottom:0.75rem;">Поезда «Ласточка» и трасса М-12</h3>
+          <p style="color:var(--text-ivory-muted); font-weight:300; font-size:0.93rem;">
+            Скоростные поезда от Восточного и Ярославского вокзалов Москвы идут до Московского вокзала НН ровно 3 часа 55 минут. Автомагистраль М-12 «Восток» проходит через Выксунский и Арзамасский районы, позволяя совместить поездку на авто с южными городами области.
+          </p>
+        </div>
+
+        <div style="border-top:1px solid var(--line-dark-strong); padding-top:1.75rem;">
+          <div class="mono-tag" style="color:var(--accent-bronze-light); margin-bottom:0.5rem;">КАНАТНАЯ ПЕРЕПРАВА</div>
+          <h3 class="serif" style="font-size:1.95rem; margin-bottom:0.75rem;">Канатная дорога Нижний Новгород — Бор</h3>
+          <p style="color:var(--text-ivory-muted); font-weight:300; font-size:0.93rem;">
+            Самый длинный в Европе безопорный пролёт над водной поверхностью (861 м из 3661 м общей длины). Время в пути — 12.5 минут. Учитывайте регламентный технический перерыв по понедельникам и четвергам с 10:45 до 13:00.
+          </p>
+        </div>
+
+        <div style="border-top:1px solid var(--line-dark-strong); padding-top:1.75rem;">
+          <div class="mono-tag" style="color:var(--accent-bronze-light); margin-bottom:0.5rem;">ВЕРТИКАЛЬНЫЙ ТРАНСПОРТ</div>
+          <h3 class="serif" style="font-size:1.95rem; margin-bottom:0.75rem;">Кремлёвский фуникулёр и кольцо трамвая №2</h3>
+          <p style="color:var(--text-ivory-muted); font-weight:300; font-size:0.93rem;">
+            Подземно-наземный фуникулёр (элеватор) за 2 минуты поднимает пассажиров от площади Народного единства (ул. Рождественская) внутрь Кремля. Для обзорной поездки по старому городу садитесь на ретро-трамвай маршрута №2 («Городское кольцо»).
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="modal-backdrop" id="placeModal">
+    <div class="modal-window" id="placeModalBody"></div>
+  </div>
+
+  <div class="drawer-backdrop" id="favDrawer">
+    <div class="drawer-panel">
+      <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:1.25rem; border-bottom:1px solid var(--line-light-strong);">
+        <h3 class="serif" style="font-size:1.85rem;">Мой маршрут</h3>
+        <button id="favDrawerClose" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">✕</button>
+      </div>
+      <div id="drawerList" style="flex-grow:1; overflow-y:auto; padding:1rem 0;"></div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+      <a href="index.html" class="brand-logo" style="color:var(--text-ivory);"><span class="meet">meet</span>NIZHNY</a>
+      <span style="font-size:0.8rem; color:var(--text-ivory-muted);">© 2026 meetNIZHNY • Часть III: Сценарии и логистика</span>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

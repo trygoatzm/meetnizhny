@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Нижегородская область — Экспедиции | meetNIZHNY</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="utility-bar">
+    <div class="container utility-inner">
+      <span>Экспедиционный гид • Радиус от 38 до 230 км от Нижнего Новгорода</span>
+      <span>8 больших направлений • Навигация «Валдай 45Р»</span>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand-logo"><span class="meet">meet</span>NIZHNY</a>
+      <nav class="main-nav">
+        <a href="index.html" class="nav-link">Обложка</a>
+        <a href="city.html" class="nav-link">Нижний Новгород</a>
+        <a href="region.html" class="nav-link active">Экспедиции в область</a>
+        <a href="routes.html" class="nav-link">Сценарии и логистика</a>
+      </nav>
+      <button class="fav-trigger" id="favDrawerBtn">
+        <span>Мой маршрут</span>
+        <span class="fav-count">[0]</span>
+      </button>
+    </div>
+  </header>
+
+  <section class="hero hero-subpage">
+    <img class="hero-bg" data-wiki="Воскресенский собор (Арзамас)" src="https://commons.wikimedia.org/wiki/Special:FilePath/Arzamas_Resurrection_Cathedral.jpg?width=1600" alt="Воскресенский собор в Арзамасе">
+    <div class="hero-gradient"></div>
+    <div class="container">
+      <span class="eyebrow" style="color:var(--accent-bronze-light);">Часть II • Нижегородская область</span>
+      <div class="hero-grid">
+        <div>
+          <h1 class="display-title">За пределами города: <em>инженерия, соборы</em> и древние леса</h1>
+        </div>
+        <div class="hero-aside">
+          <p>
+            Восемь самостоятельных экспедиций одного дня или уикенда: от индустриального искусства Выксы и гиперболоидов Шухова до пушкинского Болдина и озера Светлояр.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Каталог экспедиций по области (Remote Lands Dark Expedition Aesthetic) -->
+  <section class="section section-dark">
+    <div class="container">
+      <div class="section-header-split">
+        <div>
+          <span class="eyebrow">Вдохновлено Remote Lands • Expedition Telemetry</span>
+          <h2 class="section-title">Восемь <em>региональных экспедиций</em></h2>
+        </div>
+        <p class="section-lead">
+          Каждая карточка содержит точную дорожную телеметрию: дистанцию от центра Нижнего Новгорода, оптимальный транспорт и GPS-координаты.
+        </p>
+      </div>
+
+      <div class="filter-strip">
+        <button class="filter-tab active" data-reg-cat="all">Все экспедиции [8]</button>
+        <button class="filter-tab" data-reg-cat="industrial">Индустриальный шик (Выкса и Шухов)</button>
+        <button class="filter-tab" data-reg-cat="crafts">Ремёсла и древние города (Городец и Семёнов)</button>
+        <button class="filter-tab" data-reg-cat="architecture">Соборы и замки (Арзамас и Макарьев)</button>
+        <button class="filter-tab" data-reg-cat="nature">Усадьбы и природа (Болдино и Светлояр)</button>
+      </div>
+
+      <div class="editorial-grid" id="regionDirectoryGrid"></div>
+    </div>
+  </section>
+
+  <!-- Таблица водных маршрутов «Валдай 45Р» -->
+  <section class="section section-alabaster">
+    <div class="container">
+      <div class="section-header-split">
+        <div>
+          <span class="eyebrow">Волга и Ока • Скоростной флот ЦКБ по СПК им. Алексеева</span>
+          <h2 class="section-title">Экспедиции по воде на <em>«Валдае 45Р»</em></h2>
+        </div>
+        <p class="section-lead">
+          Нижний Новгород — родина судов на подводных крыльях Ростислава Алексеева. С мая по сентябрь от причала №8 у Чкаловской лестницы ходят регулярные рейсы по области.
+        </p>
+      </div>
+
+      <div style="border-top:1px solid var(--line-light-strong);">
+        <div class="itinerary-step" style="grid-template-columns: 180px 1fr 240px;">
+          <div class="mono-tag" style="color:var(--accent-terracotta);">ВВЕРХ ПО ВОЛГЕ • 55 МИН</div>
+          <div>
+            <h3 class="serif" style="font-size:1.75rem;">Нижний Новгород — Городец</h3>
+            <p style="color:var(--text-charcoal); font-weight:300;">Проход через шлюзы Нижегородской ГЭС с причаливанием прямо у деревянного «Города мастеров» в Городце.</p>
+          </div>
+          <div class="mono-tag" style="text-align:right;">Ежедневно с мая по сентябрь</div>
+        </div>
+
+        <div class="itinerary-step" style="grid-template-columns: 180px 1fr 240px;">
+          <div class="mono-tag" style="color:var(--accent-terracotta);">ВНИЗ ПО ВОЛГЕ • 1 Ч 45 МИН</div>
+          <div>
+            <h3 class="serif" style="font-size:1.75rem;">Нижний Новгород — Макарьевский монастырь</h3>
+            <p style="color:var(--text-charcoal); font-weight:300;">Живописный маршрут вдоль крутых правобережных откосов к белокаменным стенам Желтоводского Макариева монастыря XVII века.</p>
+          </div>
+          <div class="mono-tag" style="text-align:right;">Стоянка у монастыря 3 часа</div>
+        </div>
+
+        <div class="itinerary-step" style="grid-template-columns: 180px 1fr 240px;">
+          <div class="mono-tag" style="color:var(--accent-terracotta);">ВВЕРХ ПО ОКЕ • 45 МИН</div>
+          <div>
+            <h3 class="serif" style="font-size:1.75rem;">Нижний Новгород — Шуховская башня (Дзержинск)</h3>
+            <p style="color:var(--text-charcoal); font-weight:300;">Водная прогулка по Оке с высадкой на причале у подножия 128-метровой гиперболоидной башни Шухова.</p>
+          </div>
+          <div class="mono-tag" style="text-align:right;">Дневные и вечерние рейсы</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="modal-backdrop" id="placeModal">
+    <div class="modal-window" id="placeModalBody"></div>
+  </div>
+
+  <div class="drawer-backdrop" id="favDrawer">
+    <div class="drawer-panel">
+      <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:1.25rem; border-bottom:1px solid var(--line-light-strong);">
+        <h3 class="serif" style="font-size:1.85rem;">Мой маршрут</h3>
+        <button id="favDrawerClose" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">✕</button>
+      </div>
+      <div id="drawerList" style="flex-grow:1; overflow-y:auto; padding:1rem 0;"></div>
+      <a href="routes.html" class="btn btn-terracotta" style="width:100%;">Открыть почасовые таймлайны →</a>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+      <a href="index.html" class="brand-logo" style="color:var(--text-ivory);"><span class="meet">meet</span>NIZHNY</a>
+      <span style="font-size:0.8rem; color:var(--text-ivory-muted);">© 2026 meetNIZHNY • Часть II: Нижегородская область</span>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Нижний Новгород — Архитектура, Кварталы, Закаты | meetNIZHNY</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="utility-bar">
+    <div class="container utility-inner">
+      <span>Городской путеводитель • Верхний и Нижний посад, Заречная часть</span>
+      <span>9 архитектурных доминант • 4 исторических квартала</span>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand-logo"><span class="meet">meet</span>NIZHNY</a>
+      <nav class="main-nav">
+        <a href="index.html" class="nav-link">Обложка</a>
+        <a href="city.html" class="nav-link active">Нижний Новгород</a>
+        <a href="region.html" class="nav-link">Экспедиции в область</a>
+        <a href="routes.html" class="nav-link">Сценарии и логистика</a>
+      </nav>
+      <button class="fav-trigger" id="favDrawerBtn">
+        <span>Мой маршрут</span>
+        <span class="fav-count">[0]</span>
+      </button>
+    </div>
+  </header>
+
+  <section class="hero hero-subpage">
+    <img class="hero-bg" data-wiki="Чкаловская лестница" src="https://commons.wikimedia.org/wiki/Special:FilePath/Chkalov_Staircase.jpg?width=1600" alt="Чкаловская лестница и волжский откос">
+    <div class="hero-gradient"></div>
+    <div class="container">
+      <span class="eyebrow" style="color:var(--accent-bronze-light);">Часть I • Городской гид</span>
+      <div class="hero-grid">
+        <div>
+          <h1 class="display-title">Нижний Новгород: <em>каменная летопись</em> и столица закатов</h1>
+        </div>
+        <div class="hero-aside">
+          <p>
+            Полный каталог ключевых архитектурных памятников, музеев и панорамных площадок города с точными координатами и историческим досье.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Каталог 9 городских доминант (Belmond 4:5 Portrait Grid) -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header-split">
+        <div>
+          <span class="eyebrow">Архитектурный справочник А–Я</span>
+          <h2 class="section-title">Девять главных <em>доминант города</em></h2>
+        </div>
+        <p class="section-lead">
+          От итальянской фортификации XVI века и неорусского модерна Госбанка до металлических ферм Пакгаузов на Стрелке.
+        </p>
+      </div>
+
+      <div class="filter-strip">
+        <button class="filter-tab active" data-city-cat="all">Все доминанты [9]</button>
+        <button class="filter-tab" data-city-cat="architecture">Кремль, палаты и купеческий модерн</button>
+        <button class="filter-tab" data-city-cat="avantgarde">Авангард и современное искусство</button>
+        <button class="filter-tab" data-city-cat="sunset">Панорамные откосы и закаты</button>
+      </div>
+
+      <div class="editorial-grid" id="cityDirectoryGrid"></div>
+    </div>
+  </section>
+
+  <!-- Интерактивная матрица кварталов (Discover LA Neighborhoods Matrix) -->
+  <section class="section section-stone">
+    <div class="container">
+      <div class="section-header-split">
+        <div>
+          <span class="eyebrow">Пешеходная урбанистика</span>
+          <h2 class="section-title">Характер и <em>четыре квартала</em></h2>
+        </div>
+        <p class="section-lead">
+          Выберите район слева, чтобы изучить его архитектурный профиль, время прогулки и ключевые адреса.
+        </p>
+      </div>
+
+      <div class="hood-explorer">
+        <div class="hood-sidebar" id="hoodSidebar"></div>
+        <div class="hood-content" id="hoodContent"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Закатные амфитеатры и Гастрономия -->
+  <section class="section section-dark">
+    <div class="container">
+      <div class="section-header-split">
+        <div>
+          <span class="eyebrow">Вечерний ритуал</span>
+          <h2 class="section-title">География закатов и <em>новая волжская кухня</em></h2>
+        </div>
+        <p class="section-lead">
+          Благодаря развороту русла Оки и Волги на северо-запад солнце в Нижнем садится прямо в воду между двумя берегами.
+        </p>
+      </div>
+
+      <div class="editorial-grid">
+        <div style="border-top:1px solid var(--line-dark-strong); padding-top:1.75rem;">
+          <div class="mono-tag" style="color:var(--accent-bronze-light); margin-bottom:0.5rem;">01 / АЗИМУТ НА СТРЕЛКУ</div>
+          <h3 class="serif" style="font-size:2rem; margin-bottom:0.75rem;">Террасы набережной Федоровского</h3>
+          <p style="color:var(--text-ivory-muted); font-weight:300; font-size:0.95rem;">
+            Стеклянные павильоны, деревянные шезлонги и подвесные мосты над Почтовым съездом. Лучший фронтальный вид на закат за собором Александра Невского и Канавинским мостом.
+          </p>
+        </div>
+
+        <div style="border-top:1px solid var(--line-dark-strong); padding-top:1.75rem;">
+          <div class="mono-tag" style="color:var(--accent-bronze-light); margin-bottom:0.5rem;">02 / АЗИМУТ НА ЗАВОЛЖЬЕ</div>
+          <h3 class="serif" style="font-size:2rem; margin-bottom:0.75rem;">Откос у Георгиевской башни и Александровский сад</h3>
+          <p style="color:var(--text-ivory-muted); font-weight:300; font-size:0.95rem;">
+            Верхняя площадка Чкаловской лестницы и знаменитая «Ракушка» в Александровском саду, где летом проходят симфонические концерты на фоне багровой Волги.
+          </p>
+        </div>
+
+        <div style="border-top:1px solid var(--line-dark-strong); padding-top:1.75rem;">
+          <div class="mono-tag" style="color:var(--accent-bronze-light); margin-bottom:0.5rem;">03 / ГАСТРОНОМИЧЕСКИЙ КОД</div>
+          <h3 class="serif" style="font-size:2rem; margin-bottom:0.75rem;">Купеческие пассажи Рождественской</h3>
+          <p style="color:var(--text-ivory-muted); font-weight:300; font-size:0.95rem;">
+            После захода солнца жизнь перемещается вниз — к улице Рождественской: здесь подают волжского судака, копчёного сома, городецкие пряники и ремесленные сидры в кирпичных сводах XIX века.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="modal-backdrop" id="placeModal">
+    <div class="modal-window" id="placeModalBody"></div>
+  </div>
+
+  <div class="drawer-backdrop" id="favDrawer">
+    <div class="drawer-panel">
+      <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:1.25rem; border-bottom:1px solid var(--line-light-strong);">
+        <h3 class="serif" style="font-size:1.85rem;">Мой маршрут</h3>
+        <button id="favDrawerClose" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">✕</button>
+      </div>
+      <div id="drawerList" style="flex-grow:1; overflow-y:auto; padding:1rem 0;"></div>
+      <a href="routes.html" class="btn btn-terracotta" style="width:100%;">Открыть почасовые таймлайны →</a>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+      <a href="index.html" class="brand-logo" style="color:var(--text-ivory);"><span class="meet">meet</span>NIZHNY</a>
+      <span style="font-size:0.8rem; color:var(--text-ivory-muted);">© 2026 meetNIZHNY • Часть I: Городской гид</span>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
