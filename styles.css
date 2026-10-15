@@ -1271,4 +1271,8 @@ h1 em, h2 em, h3 em, .serif em {
     width: 100%;
     padding: 0.95rem 1.25rem;
   }
+  @media (max-width: 720px) {
+  .site-header {
+    position: relative; /* Шапка остаётся наверху страницы и не едет за скроллом */
+  }
 }
