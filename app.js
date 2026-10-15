@@ -1,105 +1,6 @@
 /* ==========================================================================
-   НАДЁЖНЫЙ ЗАГРУЗЧИК РЕАЛЬНЫХ ФОТО НИЖНЕГО НОВГОРОДА (WIKIPEDIA + COMMONS)
-   Поддерживает редиректы + прямой поиск по фотобанку Wikimedia Commons
-   ========================================================================== */
-const WIKI_IMAGE_CACHE = {};
-
-// Тёмный минималистичный плейсхолдер на долю секунды, пока идёт ответ API (чтобы не мигала иконка битого файла)
-const SAFE_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='900' viewBox='0 0 1200 900'%3E%3Crect width='1200' height='900' fill='%2316181D'/%3E%3C/svg%3E";
-
-async function fetchCommonsPhotoBySearch(searchQuery) {
-  try {
-    // gsrnamespace=6 ищет строго в пространстве File: (изображения) на Wikimedia Commons
-    const url = `https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrnamespace=6&gsrsearch=${encodeURIComponent('filetype:bitmap ' + searchQuery)}&gsrlimit=1&prop=imageinfo&iiprop=url&iiurlwidth=1400`;
-    const res = await fetch(url);
-    const data = await res.json();
-    if (data.query && data.query.pages) {
-      const firstPage = Object.values(data.query.pages)[0];
-      if (firstPage?.imageinfo?.[0]) {
-        return firstPage.imageinfo[0].thumburl || firstPage.imageinfo[0].url;
-      }
-    }
-  } catch (e) {
-    console.warn('Commons search fallback error:', e);
-  }
-  return null;
-}
-
-async function hydrateRealNizhnyPhotos() {
-  const imgElements = document.querySelectorAll('img[data-wiki]');
-  if (!imgElements.length) return;
-
-  // Ставим аккуратный фон вместо битых ссылок до загрузки
-  imgElements.forEach(img => {
-    const currentSrc = img.getAttribute('src') || '';
-    if (!currentSrc || currentSrc.includes('Special:FilePath')) {
-      img.src = SAFE_PLACEHOLDER;
-    }
-  });
-
-  const uniqueTitles = [...new Set(Array.from(imgElements).map(el => el.getAttribute('data-wiki')))];
-  const needFetch = uniqueTitles.filter(t => !WIKI_IMAGE_CACHE[t]);
-
-  if (needFetch.length > 0) {
-    try {
-      // 1. Запрос в Русскую Википедию с автоматическим переходом по редиректам (&redirects=1)
-      const url = `https://ru.wikipedia.org/w/api.php?action=query&format=json&origin=*&redirects=1&prop=pageimages&piprop=thumbnail&pithumbsize=1400&titles=${encodeURIComponent(needFetch.join('|'))}`;
-      const res = await fetch(url);
-      const data = await res.json();
-
-      if (data.query) {
-        const aliasMap = {}; // Карта соответствия: финальный заголовок -> исходные запросы
-        needFetch.forEach(t => { aliasMap[t] = [t]; });
-
-        if (data.query.normalized) {
-          data.query.normalized.forEach(n => {
-            aliasMap[n.to] = (aliasMap[n.to] || []).concat(aliasMap[n.from] || [n.from]);
-          });
-        }
-        if (data.query.redirects) {
-          data.query.redirects.forEach(r => {
-            aliasMap[r.to] = (aliasMap[r.to] || []).concat(aliasMap[r.from] || [r.from]);
-          });
-        }
-
-        if (data.query.pages) {
-          Object.values(data.query.pages).forEach(page => {
-            if (page.thumbnail && page.thumbnail.source) {
-              WIKI_IMAGE_CACHE[page.title] = page.thumbnail.source;
-              const originals = aliasMap[page.title] || [];
-              originals.forEach(orig => {
-                WIKI_IMAGE_CACHE[orig] = page.thumbnail.source;
-              });
-            }
-          });
-        }
-      }
-    } catch (err) {
-      console.warn('Wiki API error:', err);
-    }
-
-    // 2. Если для какого-то заголовка в Википедии не нашлось обложки — ищем фото напрямую в Wikimedia Commons
-    const stillMissing = needFetch.filter(t => !WIKI_IMAGE_CACHE[t]);
-    await Promise.all(stillMissing.map(async (queryTitle) => {
-      const commonsUrl = await fetchCommonsPhotoBySearch(queryTitle);
-      if (commonsUrl) {
-        WIKI_IMAGE_CACHE[queryTitle] = commonsUrl;
-      }
-    }));
-  }
-
-  // Применяем проверенные ссылки ко всем тегам <img>
-  imgElements.forEach(img => {
-    const title = img.getAttribute('data-wiki');
-    if (WIKI_IMAGE_CACHE[title]) {
-      img.src = WIKI_IMAGE_CACHE[title];
-    }
-  });
-}
-
-/* ==========================================================================
    1. БАЗА ДЛЯ ГЛАВНОЙ СТРАНИЦЫ (index.html)
-   Точные заголовки и поисковые ключи Wikimedia для каждого блока
+   Все изображения загружаются мгновенно из локальной папки img/
    ========================================================================== */
 const FEELINGS_DATA = [
   {
@@ -107,8 +8,7 @@ const FEELINGS_DATA = [
     num: '01 / ЭМОЦИЯ',
     name: 'Предзакатная эйфория над слиянием рек',
     sub: 'Столица закатов • Акватория Оки и Волги',
-    wikiTitle: 'Собор Александра Невского (Нижний Новгород)',
-    fallbackImg: SAFE_PLACEHOLDER,
+    image: 'img/nevsky.jpg',
     quote: 'Когда солнце садится точно за купола собора Александра Невского на Стрелке, стометровые Дятловы горы превращаются в природный партер.',
     routeLink: 'routes.html',
     pairings: ['Террасы набережной Федоровского', 'Парусная регата под метромостом', 'Концерт в зеркальном зале Пакгаузов']
@@ -118,8 +18,7 @@ const FEELINGS_DATA = [
     num: '02 / ЭМОЦИЯ',
     name: 'Индустриальный шик и инженерный гений',
     sub: 'Чугунное кружево 1896 года и гиперболоиды Шухова',
-    wikiTitle: 'Шуховская башня на Оке',
-    fallbackImg: SAFE_PLACEHOLDER,
+    image: 'img/shukhov.jpg',
     quote: 'Нижегородский регион — родина русской инженерной смелости: от сетчатых башен Владимира Шухова на берегу Оки до индустриальных муралов Выксы.',
     routeLink: 'region.html',
     pairings: ['Ажурные Пакгаузы на Стрелке', '128-метровая башня Шухова в Дзержинске', 'Муралы Эрика Булатова на заводе в Выксе']
@@ -129,8 +28,7 @@ const FEELINGS_DATA = [
     num: '03 / ЭМОЦИЯ',
     name: 'Купеческий размах «кармана России»',
     sub: 'Дворцы Верхне-Волжской набережной и бары Рождественской',
-    wikiTitle: 'Рождественская церковь (Нижний Новгород)',
-    fallbackImg: SAFE_PLACEHOLDER,
+    image: 'img/stroganov.jpg',
     quote: 'Миллионные сделки Нижегородской ярмарки оставили городу палаты XVII века, белокаменное строгановское барокко и неорусский замок Госбанка.',
     routeLink: 'city.html',
     pairings: ['Строгановская церковь и пассаж Блиновых', 'Палаты Рукавишниковых на откосе', 'Здание Государственного банка на Покровке']
@@ -140,8 +38,7 @@ const FEELINGS_DATA = [
     num: '04 / ЭМОЦИЯ',
     name: 'Тишина усадеб и мистика Заволжья',
     sub: 'Озеро Светлояр, Керженская тайга и Болдинская осень',
-    wikiTitle: 'Светлояр',
-    fallbackImg: SAFE_PLACEHOLDER,
+    image: 'img/svetloyar.jpg',
     quote: 'В часе езды от мегаполиса начинаются заповедные леса Заволжья, легенда о невидимом граде Китеже и пруды пушкинского Болдина.',
     routeLink: 'region.html',
     pairings: ['Утренний туман на озере Светлояр', 'Экотропы Керженского заповедника', 'Роща Лучинник в Большом Болдине']
@@ -158,8 +55,7 @@ const SIGNATURE_EXPERIENCES = [
     title: 'Под парусом на закате у слияния Оки и Волги',
     location: 'Акватория Стрелки и Речного вокзала',
     duration: '2 часа',
-    wikiTitle: 'Нижне-Волжская набережная',
-    fallbackImg: SAFE_PLACEHOLDER,
+    image: 'img/nizhnevolzhskaya.jpg',
     desc: 'Выход на спортивной или круизной яхте из залива у Гребного канала вдоль Чкаловской лестницы и стен Кремля к самому острию Стрелки в золотой час.'
   },
   {
@@ -171,8 +67,7 @@ const SIGNATURE_EXPERIENCES = [
     title: 'Концерт с панорамной стеклянной стеной в Пакгаузах',
     location: 'Стрелка, Концертный пакгауз',
     duration: '2.5 часа',
-    wikiTitle: 'Пакгаузы Нижний Новгород',
-    fallbackImg: SAFE_PLACEHOLDER,
+    image: 'img/pakgauzy.jpg',
     desc: 'Вечер симфонической или минималистичной музыки внутри металлических кружев 1896 года, когда позади оркестра открывается живая панорама ночной Волги.'
   },
   {
@@ -184,8 +79,7 @@ const SIGNATURE_EXPERIENCES = [
     title: 'Горячий прокат в Выксе и закат у башни Шухова',
     location: 'Дзержинск — Выкса',
     duration: '12 часов',
-    wikiTitle: 'Шуховская башня на Оке',
-    fallbackImg: SAFE_PLACEHOLDER,
+    image: 'img/shukhov.jpg',
     desc: 'Посещение действующего металлургического цеха с коллекцией индустриального стрит-арта и вечер у единственной в мире гиперболоидной опоры ЛЭП на Оке.'
   },
   {
@@ -197,8 +91,7 @@ const SIGNATURE_EXPERIENCES = [
     title: 'На крыльях «Валдая» к белокаменному Макарьеву',
     location: 'Нижний Новгород — Макарьев / Городец',
     duration: '6 часов',
-    wikiTitle: 'Желтоводский Макариев монастырь',
-    fallbackImg: SAFE_PLACEHOLDER,
+    image: 'img/makaryev.jpg',
     desc: 'Полёт над водой на скоростном судне «Валдай 45Р» вниз по Волге к неприступным стенам Макарьевского монастыря XVII века, где шумела знаменитая ярмарка.'
   },
   {
@@ -210,8 +103,7 @@ const SIGNATURE_EXPERIENCES = [
     title: 'Чаепитие из самовара в тайных садах Заповедных кварталов',
     location: 'Квартал церкви Трёх Святителей (ул. Короленко)',
     duration: '3 часа',
-    wikiTitle: 'Большая Покровская улица',
-    fallbackImg: SAFE_PLACEHOLDER,
+    image: 'img/pokrovka.jpg',
     desc: 'Иммерсивный променад по деревянному Нижнему XIX века, где жили Шаляпин и Горький, с заходом в отреставрированные особняки деревянного модерна.'
   },
   {
@@ -223,8 +115,7 @@ const SIGNATURE_EXPERIENCES = [
     title: 'Золотая Болдинская осень в родовом имении Пушкина',
     location: 'Большое Болдино и Львовка',
     duration: '1–2 дня',
-    wikiTitle: 'Большое Болдино',
-    fallbackImg: SAFE_PLACEHOLDER,
+    image: 'img/boldino.jpg',
     desc: 'Прогулка по подлинному барскому дому 1830 года, горбатым мостикам и заповедной роще Лучинник в дни пика осеннего листопада.'
   }
 ];
@@ -243,8 +134,7 @@ const CITY_PLACES = [
     duration: '2.5 часа',
     bestTime: 'За 2 часа до заката',
     coords: '56.3287° N, 44.0020° E',
-    wikiTitle: 'Нижегородский кремль',
-    fallbackImg: 'https://commons.wikimedia.org/wiki/Special:FilePath/Nizhny_Novgorod_Kremlin.jpg?width=1000',
+    image: 'img/kremlin.jpg',
     excerpt: 'Единственный в России кремль с полностью открытым круговым маршрутом по стене (2045 метров) и перепадом высот в 80 метров.',
     history: 'Возведённый в 1500–1515 годах при участии итальянского зодчего Пьетро Франческо, Нижегородский кремль спускается по крутым отрогам Дятловых гор почти до самой воды. Во время прогулки по стене вы проходите все 13 башен — от Георгиевской до Коромысловой.',
     insiderTip: 'Воспользуйтесь воссозданным кремлёвским фуникулёром (элеватором) у Северной башни: он в точности повторяет трассу исторического подъёмника 1896 года и спускает прямо к улице Рождественской.'
@@ -259,8 +149,7 @@ const CITY_PLACES = [
     duration: '2 часа',
     bestTime: 'Сумерки и золотой час',
     coords: '56.3346° N, 43.9728° E',
-    wikiTitle: 'Стрелка (Нижний Новгород)',
-    fallbackImg: 'https://commons.wikimedia.org/wiki/Special:FilePath/Strelka_in_Nizhny_Novgorod.jpg?width=1000',
+    image: 'img/strelka.jpg',
     excerpt: 'Географический мыс на месте слияния Оки и Волги с металлическими конструкциями павильонов Всероссийской выставки 1896 года.',
     history: 'Более ста лет ажурные клёпаные каркасы были скрыты под кирпичными стенами портовых складов. После расчистки и реставрации внутри стальных кружев разместили ультрасовременный концертный зал и выставочную галерею.',
     insiderTip: 'Пройдите до самого острия мыса Стрелки — в солнечную погоду с берега невооружённым глазом видна чёткая граница двух разных по цвету потоков Оки и Волги.'
@@ -275,8 +164,7 @@ const CITY_PLACES = [
     duration: '1 час',
     bestTime: 'Дневной свет',
     coords: '56.3204° N, 43.9982° E',
-    wikiTitle: 'Здание Государственного банка (Нижний Новгород)',
-    fallbackImg: 'https://commons.wikimedia.org/wiki/Special:FilePath/State_Bank_in_Nizhny_Novgorod.jpg?width=1000',
+    image: 'img/gosbank.jpg',
     excerpt: 'Сказочный белокаменный терем-замок 1913 года по проекту Владимира Покровского с фресками по эскизам Ивана Билибина.',
     history: 'Построенный к 300-летию дома Романовых комплекс банка снаружи напоминает средневековые царские палаты с коваными воротами и часозвоней, а внутри скрывает сводчатые операционные залы, расписанные темперой и золотом.',
     insiderTip: 'Даже когда внутрь операционного зала нет экскурсий, обязательно обойдите здание со стороны улицы Грузинской, чтобы рассмотреть керамические майоликовые панно и крытую арку-переход с часами.'
@@ -291,8 +179,7 @@ const CITY_PLACES = [
     duration: '2–3 часа',
     bestTime: 'Вечер',
     coords: '56.3282° N, 43.9875° E',
-    wikiTitle: 'Церковь Собора Пресвятой Богородицы (Нижний Новгород)',
-    fallbackImg: 'https://commons.wikimedia.org/wiki/Special:FilePath/Stroganov_Church_in_Nizhny_Novgorod.jpg?width=1000',
+    image: 'img/stroganov.jpg',
     excerpt: 'Фирменное белокаменное кружево конца XVII века среди купеческих банков, пассажей и главных баров Нижнего посада.',
     history: 'Храм построен купцом Григорием Строгановым. На колокольне сохранились старинные куранты, а сама улица Рождественская насчитывает 35 памятников архитектуры, включая знаменитый Блиновский пассаж.',
     insiderTip: 'Поднимитесь на звонницу Строгановской церкви до 17:00 — это лучшая точка, чтобы увидеть крыши Рождественской, Речной вокзал и Стрелку с средней высоты.'
@@ -307,8 +194,7 @@ const CITY_PLACES = [
     duration: '1.5 часа',
     bestTime: 'Золотой час и сумерки',
     coords: '56.3316° N, 44.0094° E',
-    wikiTitle: 'Чкаловская лестница',
-    fallbackImg: 'https://commons.wikimedia.org/wiki/Special:FilePath/Chkalov_Staircase.jpg?width=1000',
+    image: 'img/chkalov.jpg',
     excerpt: 'Монументальная восьмёрка из 560 ступеней на высоком волжском откосе и парадная анфилада купеческих особняков.',
     history: 'Заложенная в 1943 году лестница связывает Георгиевскую башню Кремля с Нижне-Волжской набережной. От неё на восток тянется Верхне-Волжская набережная, спроектированная по личному указу Николая I как главный фасад города над Волгой.',
     insiderTip: 'На пересечении двух нижних колец лестницы есть акустическая точка: если встать ровно в центр круглой площадки, ваш голос будет звучать с эффектом микрофонного резонанса.'
@@ -323,8 +209,7 @@ const CITY_PLACES = [
     duration: '1.5 часа',
     bestTime: 'Днём',
     coords: '56.3298° N, 44.0162° E',
-    wikiTitle: 'Усадьба Рукавишниковых',
-    fallbackImg: 'https://commons.wikimedia.org/wiki/Special:FilePath/Rukavishnikov_Mansion.jpg?width=1000',
+    image: 'img/rukavishnikov.jpg',
     excerpt: 'Самый роскошный особняк дореволюционного Нижнего в стиле итальянского палаццо с мраморной парадной лестницей и бальным залом.',
     history: 'Купец-миллионер Сергей Рукавишников пригласил московского архитектора Бойцова и скульптора Микешина, чтобы создать дворец, превосходящий столичные резиденции.',
     insiderTip: 'Купите единый билет с посещением парадного второго этажа и выходом на балкон-бельведер с видом на заволжские дали.'
@@ -339,8 +224,7 @@ const CITY_PLACES = [
     duration: '1.5 часа',
     bestTime: 'За 45 минут до заката',
     coords: '56.3249° N, 43.9841° E',
-    wikiTitle: 'Набережная Федоровского',
-    fallbackImg: 'https://commons.wikimedia.org/wiki/Special:FilePath/Fedorovsky_Embankment.jpg?width=1000',
+    image: 'img/fedorovsky.jpg',
     excerpt: 'Каскад деревянных террас, парящих пешеходных мостов через овраги и стеклянных беседок прямо над Окой.',
     history: 'Высокий склон между Почтовым съездом и улицей Заломова веками служил смотровой террасой. Сегодня это главное общественное пространство для наблюдения за заходящим солнцем.',
     insiderTip: 'Лучший ракурс открывается не с верхнего тротуара, а с нижнего яруса деревянных амфитеатров чуть левее памятника Максиму Горькому.'
@@ -355,8 +239,7 @@ const CITY_PLACES = [
     duration: '1.5 часа',
     bestTime: 'Утро или вечер с подсветкой',
     coords: '56.3285° N, 43.9612° E',
-    wikiTitle: 'Нижегородская ярмарка',
-    fallbackImg: 'https://commons.wikimedia.org/wiki/Special:FilePath/Nizhny_Novgorod_Fair.jpg?width=1000',
+    image: 'img/yarmarka.jpg',
     excerpt: 'Историческое сердце всероссийской торговли XIX века, где определялись мировые цены на чай, пушнину и уральское железо.',
     history: 'Грандиозный Главный ярмарочный дом 1890 года окружён благоустроенной площадью с фонтаном XIX века, ярмарочной башней и 87-метровым собором Александра Невского.',
     insiderTip: 'Зимой на площади перед Главным домом заливают большой каток и ставят дровяную печь под открытым небом.'
@@ -371,8 +254,7 @@ const CITY_PLACES = [
     duration: '2 часа',
     bestTime: 'Среда (свободный вход) или выходные',
     coords: '56.3292° N, 44.0041° E',
-    wikiTitle: 'Арсенал (Нижний Новгород)',
-    fallbackImg: 'https://commons.wikimedia.org/wiki/Special:FilePath/Arsenal_in_the_Nizhny_Novgorod_Kremlin.jpg?width=1000',
+    image: 'img/arsenal.jpg',
     excerpt: 'Крупнейшая институция современного искусства Поволжья в здании николаевского оружейного арсенала 1843 года.',
     history: 'Реставраторы сохранили исторические кирпичные своды Монье и чугунные колонны XIX века, интегрировав в них выставочные залы мирового музейного стандарта.',
     insiderTip: 'В левом крыле первого этажа работает независимый книжный магазин с редкими монографиями по нижегородскому конструктивизму и деревянному зодчеству.'
@@ -394,8 +276,7 @@ const REGION_EXPEDITIONS = [
     transport: 'Автомобиль / Заказной трансфер',
     bestTime: 'Май — Октябрь',
     coords: '55.3194° N, 42.1730° E',
-    wikiTitle: 'Выкса',
-    fallbackImg: 'https://commons.wikimedia.org/wiki/Special:FilePath/Vyksa_Batashev_House.jpg?width=1000',
+    image: 'img/vyksa.jpg',
     excerpt: 'Моногород на границе лесов и озёр, ставший главной российской лабораторией паблик-арта и промышленного туризма.',
     history: 'Основанная в XVIII веке заводчиками братьями Баташевыми Выкса объединяет каскад рукотворных прудов, классицистическую усадьбу, гиперболоидную башню и водонапорные своды Владимира Шухова с самым большим в Европе индустриальным муралом Эрика Булатова (2500 м²) прямо на цехе завода.',
     insiderTip: 'Запишитесь заранее на промышленный маршрут по Литейно-прокатному комплексу и посмотрите деревянный павильон «Крылья» в старинном парке лебединых прудов.'
@@ -411,8 +292,7 @@ const REGION_EXPEDITIONS = [
     transport: 'Автомобиль / Электричка + такси',
     bestTime: 'Золотой час круглый год',
     coords: '56.1925° N, 43.5428° E',
-    wikiTitle: 'Шуховская башня на Оке',
-    fallbackImg: 'https://commons.wikimedia.org/wiki/Special:FilePath/Shukhov_tower_on_the_Oka_river_2006.jpg?width=1000',
+    image: 'img/shukhov.jpg',
     excerpt: 'Единственная в мире сохранившаяся многосекционная стальная гиперболоидная опора линии электропередачи (128 метров, 1929 год).',
     history: 'Спроектированная великим инженером Владимиром Шуховым башня стоит на высоком песчаном берегу Оки посреди соснового бора. Вечером на пяти секциях стальной сетки зажигается динамическая архитектурная подсветка из 23 000 светодиодов.',
     insiderTip: 'Приезжайте за час до сумерек: вы увидите башню и при естественном закатном свете на фоне сосен, и в момент включения вечерней световой инсталляции.'
@@ -428,8 +308,7 @@ const REGION_EXPEDITIONS = [
     transport: '«Валдай 45Р» по Волге / Авто',
     bestTime: 'Май — Сентябрь (речная навигация)',
     coords: '56.6444° N, 43.4703° E',
-    wikiTitle: 'Городец',
-    fallbackImg: 'https://commons.wikimedia.org/wiki/Special:FilePath/Gorodets_view.jpg?width=1000',
+    image: 'img/gorodets.jpg',
     excerpt: 'Древнейшая крепость Нижегородского Поволжья (1152 г.) с купеческими улицами, украшенными рельефной резьбой со сказочными львами и берегинями.',
     history: 'Построенный Юрием Долгоруким Городец сохранил подлинный Музейный квартал XIX века, земляные валы XII столетия, крупнейшую в России коллекцию самоваров в усадьбе Гришаева и традицию печатных городецких пряников.',
     insiderTip: 'Поднимитесь на смотровую площадку у памятника Александру Невскому над Волгой и попробуйте испечь печатный пряник в старинной деревянной форме.'
@@ -445,8 +324,7 @@ const REGION_EXPEDITIONS = [
     transport: 'Электропоезд с Московского вокзала / Авто',
     bestTime: 'Круглый год',
     coords: '56.7892° N, 44.4925° E',
-    wikiTitle: 'Семёнов (город)',
-    fallbackImg: 'https://commons.wikimedia.org/wiki/Special:FilePath/Semenov_Nosov_house.jpg?width=1000',
+    image: 'img/semenov.jpg',
     excerpt: 'Город с французской лучевой планировкой улиц XVIII века, где из серебристого олова и льняной олифы в печи рождается золотая хохлома.',
     history: 'Исторический центр Семёнова спроектирован по принципу площадей-звёзд, за что его прозвали «маленьким Парижем». Здесь работают действующие цеха фабрики «Хохломская роспись» и сохранились старообрядческие купеческие усадьбы.',
     insiderTip: 'Попросите экскурсию непосредственно в токарочный и живописный цеха фабрики, чтобы увидеть момент превращения серебряной чаши в золотую после закалки в печи.'
@@ -462,8 +340,7 @@ const REGION_EXPEDITIONS = [
     transport: 'Автомобиль / Скоростной поезд',
     bestTime: 'Круглый год',
     coords: '55.3867° N, 43.8142° E',
-    wikiTitle: 'Воскресенский собор (Арзамас)',
-    fallbackImg: 'https://commons.wikimedia.org/wiki/Special:FilePath/Arzamas_Resurrection_Cathedral.jpg?width=1000',
+    image: 'img/arzamas.jpg',
     excerpt: 'Грандиозный Воскресенский собор с 48 колоннами и объёмными фресками-гризайлями над отреставрированным купеческим центром.',
     history: 'Построенный горожанами в честь победы 1812 года собор господствует над каскадом арзамасских холмов. Внизу раскинулась улица Гостиный ряд с аутентичными вывесками XIX века в дореформенной орфографии.',
     insiderTip: 'Зайдите в Музей Русского Патриаршества в здании старинного магистрата — единственное в мире собрание подобного профиля.'
@@ -479,8 +356,7 @@ const REGION_EXPEDITIONS = [
     transport: 'Автомобиль / Экскурсионный автобус',
     bestTime: 'Сентябрь — Октябрь (Болдинская осень)',
     coords: '55.0028° N, 45.3133° E',
-    wikiTitle: 'Большое Болдино',
-    fallbackImg: 'https://commons.wikimedia.org/wiki/Special:FilePath/Boldino_manor.jpg?width=1000',
+    image: 'img/boldino.jpg',
     excerpt: 'Подлинная пушкинская вотчина, сохранившая господский дом 1830 года, каскад зеркальных прудов, вековые ивы и деревянную вотчинную контору.',
     history: 'Три болдинские осени стали вершиной творчества Александра Пушкина. В отличие от многих других литературных усадеб, главный дом в Болдине не горел и сохранил подлинные стены и парковую геометрию.',
     insiderTip: 'После главной усадьбы проедьте 8 километров в деревню Львовка — там в тишине полей стоит дом старшего сына поэта и деревянная церковно-приходская школа.'
@@ -496,8 +372,7 @@ const REGION_EXPEDITIONS = [
     transport: 'Автомобиль',
     bestTime: 'Июнь — Сентябрь',
     coords: '56.8192° N, 45.0928° E',
-    wikiTitle: 'Светлояр',
-    fallbackImg: 'https://commons.wikimedia.org/wiki/Special:FilePath/Lake_Svetloyar.jpg?width=1000',
+    image: 'img/svetloyar.jpg',
     excerpt: 'Идеальный овал священного озера, хранящего легенду о сокрытом граде Китеже, и настильные тропы через глухую заволжскую тайгу.',
     history: 'Карстово-ледниковое озеро глубиной 36 метров окружено сосново-берёзовыми холмами в селе Владимирское. А на обратном пути в посёлке Рустай расположены деревянные тропы биосферного Керженского заповедника.',
     insiderTip: 'В селе Владимирское посетите деревянный историко-художественный музей «Китеж» с коллекцией уникальной керамики.'
@@ -513,8 +388,7 @@ const REGION_EXPEDITIONS = [
     transport: 'Судно «Валдай 45Р» / Авто + паром из Лыскова',
     bestTime: 'Летняя навигация',
     coords: '56.0825° N, 45.0569° E',
-    wikiTitle: 'Желтоводский Макариев монастырь',
-    fallbackImg: 'https://commons.wikimedia.org/wiki/Special:FilePath/Makaryev_Monastery.jpg?width=1000',
+    image: 'img/makaryev.jpg',
     excerpt: 'Белокаменная крепость XVII века, вырастающая прямо из волжской воды у пристани Лысково.',
     history: 'Именно у стен Желтоводского Макариева монастыря почти два столетия шумела всероссийская Макарьевская ярмарка, прежде чем в 1817 году переехать в Нижний Новгород. А дальше вниз по Волге стоит неоготический замок Шереметева со стеклянными куполами.',
     insiderTip: 'Если едете на машине, оставьте авто на правом берегу в Лыскове и переправьтесь к монастырю на колоритном волжском пароме.'
@@ -531,8 +405,7 @@ const NEIGHBORHOODS_DB = [
     sub: 'Дворянско-купеческий променад и палаты XVII века',
     walkTime: '2.5 часа пешком',
     keyAddresses: 'Б. Покровская, 26 (Госбанк) • Ильинская, 68 (Усадьба Маркова)',
-    wikiTitle: 'Большая Покровская улица',
-    fallbackImg: 'https://commons.wikimedia.org/wiki/Special:FilePath/Bolshaya_Pokrovskaya_Street.jpg?width=1000',
+    image: 'img/pokrovka.jpg',
     desc: 'Главная пешеходная артерия старого города со зданиями Дворянского собрания, Драматического театра и сказочным Госбанком. Если свернуть с неё к Почаинскому оврагу, вы попадёте на холмистую купеческую улицу Ильинскую («Ильинку») с белокаменными палатами Олисова и Пушникова XVII века.'
   },
   {
@@ -541,8 +414,7 @@ const NEIGHBORHOODS_DB = [
     sub: 'Бывшая биржа империи, чугунные галереи и барный кластер',
     walkTime: '2 часа пешком',
     keyAddresses: 'Рождественская, 24 (Блиновский пассаж) • Нагорный переулок',
-    wikiTitle: 'Рождественская улица (Нижний Новгород)',
-    fallbackImg: 'https://commons.wikimedia.org/wiki/Special:FilePath/Stroganov_Church_in_Nizhny_Novgorod.jpg?width=1000',
+    image: 'img/rozhdestvenskaya.jpg',
     desc: 'Улица-музей у подножия Кремлёвского холма, где в XIX веке ворочали миллионами соляные и хлебные короли Бугровы, Блиновы и Строгановы. Сегодня в её кирпичных сводчатых подвалах и внутренних дворах-колодцах работают лучшие гастробары, сидрерии и винные веранды.'
   },
   {
@@ -550,9 +422,8 @@ const NEIGHBORHOODS_DB = [
     name: 'Заповедные кварталы (Трёх Святителей)',
     sub: 'Деревянный модерн, тайные сады и уличный арт',
     walkTime: '1.5 часа пешком',
-    keyAddresses: 'Короленко, 18 (Усадьба Скворцовой) • Новая, 22 (Дом Щеلوكова)',
-    wikiTitle: 'Усадьба Рукавишниковых',
-    fallbackImg: 'https://commons.wikimedia.org/wiki/Special:FilePath/Rukavishnikov_Mansion.jpg?width=1000',
+    keyAddresses: 'Короленко, 18 (Усадьба Скворцовой) • Новая, 22 (Дом Щелокова)',
+    image: 'img/rukavishnikov.jpg',
     desc: 'Уникальный для города-миллионника живой квартал деревянной архитектуры рубежа XIX–XX веков на улицах Короленко, Славянской и Новой. Отреставрированные особняки с резными эркерами, цветными стеклами и старыми яблоневыми садами, где проходят камерные концерты.'
   },
   {
@@ -561,8 +432,7 @@ const NEIGHBORHOODS_DB = [
     sub: 'Слияние двух рек, Ярмарка и индустриальный масштаб',
     walkTime: '2 часа пешком',
     keyAddresses: 'Стрелка, 21 (Пакгаузы) • Совнаркомовская, 13 (Ярмарка)',
-    wikiTitle: 'Нижегородская ярмарка',
-    fallbackImg: 'https://commons.wikimedia.org/wiki/Special:FilePath/Nizhny_Novgorod_Fair.jpg?width=1000',
+    image: 'img/yarmarka.jpg',
     desc: 'Заречный амфитеатр города, откуда открывается главный панорамный вид на Кремль и Дятловы горы. Здесь соединились купеческий размах Главного ярмарочного дома и авангардная эстетика чугунных Пакгаузов на самом мысу Стрелки.'
   }
 ];
@@ -576,28 +446,28 @@ const MASTER_ROUTES = {
         time: 'ДЕНЬ 01 • 10:00',
         title: 'Большая Покровская, Госбанк и круговой ход Кремля',
         meta: 'Пешком 4.5 км • Верхний посад',
-        wikiTitle: 'Нижегородский кремль',
+        image: 'img/kremlin.jpg',
         desc: 'Утренний спешелти-кофе во двориках Большой Покровской, осмотр неорусского замка Госбанка и вход в Кремль через Дмитриевскую башню. Пройдите полный 2-километровый круг по боевому ходу стены и спуститесь на фуникулёре к площади Народного единства.'
       },
       {
         time: 'ДЕНЬ 01 • 15:00',
         title: 'Заповедные кварталы и современное искусство в Арсенале',
         meta: 'Культурная программа • 3 часа',
-        wikiTitle: 'Арсенал (Нижний Новгород)',
+        image: 'img/arsenal.jpg',
         desc: 'Прогулка по деревянным улицам Короленко и Славянской с поиском работ нижегородского стрит-арта, после чего — актуальная выставка в кирпичных сводах Арсенала.'
       },
       {
         time: 'ДЕНЬ 01 • 18:30',
         title: 'Закат на набережной Федоровского и ужин на Рождественской',
         meta: 'Золотой час • Амфитеатр над Окой',
-        wikiTitle: 'Набережная Федоровского',
+        image: 'img/fedorovsky.jpg',
         desc: 'Займите места на деревянных террасах парка 800-летия за 40 минут до заката, а с наступлением сумерек спуститесь по Почтовому съезду в купеческие бары Рождественской.'
       },
       {
         time: 'ДЕНЬ 02 • 11:30',
         title: 'Канатная дорога через Волгу, Ярмарка и вечер в Пакгаузах',
         meta: 'Верхне-Волжский откос и Стрелка',
-        wikiTitle: 'Стрелка (Нижний Новгород)',
+        image: 'img/strelka.jpg',
         desc: 'Переправа над Волгой по канатной дороге, променад мимо усадьбы Рукавишниковых к Чкаловской лестнице, а вечером — переезд на Стрелку к Главной ярмарке и ажурным Пакгаузам.'
       }
     ]
@@ -610,21 +480,21 @@ const MASTER_ROUTES = {
         time: '15:00 • ТОЧКА 01',
         title: 'Смотровая у Вознесенского Печерского монастыря и кабина канатной дороги',
         meta: 'Азимут на волжские луга • Высота 85 м',
-        wikiTitle: 'Вознесенский Печерский монастырь',
+        image: 'img/pechersky.jpg',
         desc: 'Панорама крутого изгиба Волги и старинного монастырского ансамбля XVII века с наклонной колокольней.'
       },
       {
         time: '17:00 • ТОЧКА 02',
         title: 'Александровский сад и восьмёрка Чкаловской лестницы',
         meta: 'Парадный откос • 560 ступеней',
-        wikiTitle: 'Чкаловская лестница',
+        image: 'img/chkalov.jpg',
         desc: 'Прогулка по террасам первого общественного парка города (1835 г.) к памятнику Чкалову.'
       },
       {
         time: '18:30 • ТОЧКА 03',
         title: 'Парящие мосты набережной Федоровского',
         meta: 'Кульминация заката • Вид на Стрелку',
-        wikiTitle: 'Набережная Федоровского',
+        image: 'img/fedorovsky.jpg',
         desc: 'Прямой фронтальный вид на заходящее солнце точно над слиянием Оки и Волги и куполами собора Александра Невского.'
       }
     ]
@@ -637,21 +507,21 @@ const MASTER_ROUTES = {
         time: 'ДЕНЬ 01 • УТРО',
         title: 'Сосновый бор и 128-метровая башня Шухова на Оке',
         meta: '38 км от Нижнего Новгорода',
-        wikiTitle: 'Шуховская башня на Оке',
+        image: 'img/shukhov.jpg',
         desc: 'Осмотр единственной в мире сетчатой гиперболоидной опоры ЛЭП 1929 года на высоком берегу Оки.'
       },
       {
         time: 'ДЕНЬ 01 • ДЕНЬ И ВЕЧЕР',
         title: 'Выкса: Усадьба Баташевых, заводские муралы и арт-парк',
         meta: '186 км от Нижнего Новгорода',
-        wikiTitle: 'Выкса',
+        image: 'img/vyksa.jpg',
         desc: 'Погружение в индустриальную культуру: водонапорная башня Шухова, мурал Эрика Булатова и вечерняя прогулка вдоль Верхневыксунского пруда.'
       },
       {
         time: 'ДЕНЬ 02 • ПОЛДЕНЬ И ВЕЧЕР',
         title: 'Соборная площадь Арзамаса и пушкинское Большое Болдино',
         meta: 'Арзамас — Большое Болдино',
-        wikiTitle: 'Воскресенский собор (Арзамас)',
+        image: 'img/arzamas.jpg',
         desc: 'Обед на историческом Гостином ряду в Арзамасе с видом на Воскресенский собор и финальный переезд в тихие парки Большого Болдина.'
       }
     ]
@@ -724,7 +594,7 @@ function buildEditorialCard(item, isRegion = false) {
   return `
     <article class="editorial-card">
       <div class="editorial-media">
-        <img src="${item.fallbackImg}" data-wiki="${item.wikiTitle}" alt="${item.title}">
+        <img src="${item.image}" alt="${item.title}" loading="lazy">
         <div class="media-top-bar">
           <span class="media-tag">${item.categoryLabel || item.tag}</span>
           <button class="fav-icon-btn ${isSaved ? 'active' : ''}" data-id="${item.id}" onclick="toggleSavedItem('${item.id}', event)">
@@ -765,11 +635,10 @@ function openDetailModal(id) {
   if (!modal || !body) return;
 
   const isSaved = getSavedIds().includes(item.id);
-  const imgSrc = WIKI_IMAGE_CACHE[item.wikiTitle] || item.fallbackImg;
 
   body.innerHTML = `
     <div class="modal-hero">
-      <img src="${imgSrc}" data-wiki="${item.wikiTitle}" alt="${item.title}">
+      <img src="${item.image}" alt="${item.title}">
       <button class="modal-close" onclick="closeDetailModal()">✕</button>
     </div>
     <div class="modal-body">
@@ -798,7 +667,6 @@ function openDetailModal(id) {
     </div>
   `;
   modal.classList.add('open');
-  hydrateRealNizhnyPhotos();
 }
 
 function closeDetailModal() {
@@ -811,7 +679,13 @@ function closeDetailModal() {
    ========================================================================== */
 document.addEventListener('DOMContentLoaded', () => {
   syncFavoritesUI();
-  hydrateRealNizhnyPhotos();
+
+  // Автоматическая установка локального логотипа (favicon) на всех страницах
+  const favLink = document.createElement('link');
+  favLink.rel = 'icon';
+  favLink.type = 'image/png';
+  favLink.href = 'logo.png';
+  document.head.appendChild(favLink);
 
   // Drawer & Modal Listeners
   const favBtn = document.getElementById('favDrawerBtn');
@@ -824,7 +698,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const modal = document.getElementById('placeModal');
   if (modal) modal.addEventListener('click', e => { if (e.target === modal) closeDetailModal(); });
 
-  // 1. INDEX.HTML: Feelings Matrix (Black Tomato) & 1-2-3 Signature Finder (Remote Lands)
+  // 1. INDEX.HTML: Feelings Matrix & 1-2-3 Signature Finder
   const feelingsNav = document.getElementById('feelingsNav');
   const feelingStage = document.getElementById('feelingStage');
   if (feelingsNav && feelingStage) {
@@ -838,9 +712,8 @@ document.addEventListener('DOMContentLoaded', () => {
         </button>
       `).join('');
 
-      const imgSrc = WIKI_IMAGE_CACHE[f.wikiTitle] || f.fallbackImg;
       feelingStage.innerHTML = `
-        <img class="feeling-stage-img" src="${imgSrc}" data-wiki="${f.wikiTitle}" alt="${f.name}">
+        <img class="feeling-stage-img" src="${f.image}" alt="${f.name}">
         <div class="feeling-stage-body">
           <span class="eyebrow">The Pursuit of Feeling</span>
           <h3 class="serif" style="font-size:2.3rem; margin-bottom:1rem;">${f.name}</h3>
@@ -854,7 +727,6 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
       `;
-      hydrateRealNizhnyPhotos();
     };
     window.selectFeeling(FEELINGS_DATA[0].id);
   }
@@ -876,7 +748,6 @@ document.addEventListener('DOMContentLoaded', () => {
       sigGrid.innerHTML = filtered.length
         ? filtered.map(item => buildEditorialCard(item, false)).join('')
         : `<p style="grid-column:1/-1; color:var(--text-muted);">Для этого сочетания фильтров выберите «Любой сезон» или «Все эмоции».</p>`;
-      hydrateRealNizhnyPhotos();
     };
     ['rlScope', 'rlMood', 'rlSeason'].forEach(id => {
       document.getElementById(id)?.addEventListener('change', renderSignatures);
@@ -890,7 +761,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderCity = (cat = 'all') => {
       const items = CITY_PLACES.filter(p => cat === 'all' || p.category === cat);
       cityGrid.innerHTML = items.map(item => buildEditorialCard(item, false)).join('');
-      hydrateRealNizhnyPhotos();
     };
     renderCity();
 
@@ -915,9 +785,8 @@ document.addEventListener('DOMContentLoaded', () => {
         </button>
       `).join('');
 
-      const imgSrc = WIKI_IMAGE_CACHE[h.wikiTitle] || h.fallbackImg;
       hoodContent.innerHTML = `
-        <img src="${imgSrc}" data-wiki="${h.wikiTitle}" alt="${h.name}">
+        <img src="${h.image}" alt="${h.name}">
         <div class="hood-details">
           <span class="eyebrow">Квартал • ${h.walkTime}</span>
           <h3 class="serif" style="font-size:2.4rem; margin-bottom:1rem;">${h.name}</h3>
@@ -928,7 +797,6 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
       `;
-      hydrateRealNizhnyPhotos();
     };
     window.selectNeighborhood(NEIGHBORHOODS_DB[0].id);
   }
@@ -939,7 +807,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderRegion = (cat = 'all') => {
       const items = REGION_EXPEDITIONS.filter(p => cat === 'all' || p.category === cat);
       regionGrid.innerHTML = items.map(item => buildEditorialCard(item, true)).join('');
-      hydrateRealNizhnyPhotos();
     };
     renderRegion();
 
@@ -976,22 +843,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 <h4 class="serif" style="font-size:1.85rem; margin-bottom:0.6rem;">${s.title}</h4>
                 <p style="color:var(--text-charcoal); font-weight:300; font-size:0.95rem;">${s.desc}</p>
               </div>
-              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Nizhny_Novgorod_Kremlin.jpg?width=800" data-wiki="${s.wikiTitle}" alt="${s.title}">
+              <img src="${s.image}" alt="${s.title}" loading="lazy">
             </div>
           `).join('')}
         </div>
       `;
-      hydrateRealNizhnyPhotos();
     };
     document.querySelectorAll('[data-route-tab]').forEach(btn => {
       btn.addEventListener('click', () => renderMasterRoute(btn.getAttribute('data-route-tab')));
     });
     renderMasterRoute('route-48h');
   }
-   // Автоматическая установка локального логотипа (favicon) на всех страницах
-  const favLink = document.createElement('link');
-  favLink.rel = 'icon';
-  favLink.type = 'image/png'; 
-  favLink.href = 'logo.png';  
-  document.head.appendChild(favLink);
 });
